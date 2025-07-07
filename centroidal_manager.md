@@ -79,7 +79,7 @@ $$
 
 ここで：
 - $( \tau_x, \tau_y )$：CoMまわりのモーメント
-- $ f_z $：鉛直方向の支持力
+- $f_z$：鉛直方向の支持力
 
 ---
 
@@ -121,10 +121,10 @@ $$
 p_d = p_{pg} + T_p \cdot \dot{p}_{pg}
 $$
 
-- $ p_d $：補償後のZMP指令値
-- $ p_{pg} $：プランナーが出力した基準ZMP
-- $ \dot{p}_{pg} $：ZMPの時間微分（速度）
-- $ T_p $：ZMP予測補償ゲイン（`zmpVelGain`）
+- $p_d$：補償後のZMP指令値
+- $p_{pg}$：プランナーが出力した基準ZMP
+- $\dot{p}_{pg}$：ZMPの時間微分（速度）
+- $T_p$：ZMP予測補償ゲイン（`zmpVelGain`）
 
 この補償は、ZMP指令の応答遅れ（モータや力制御のラグ）に対して、先読みすることで制御性能を改善する目的で導入されている。
 
@@ -134,8 +134,8 @@ $$
 
 | 項目 | 内容 |
 |------|------|
-| `calcRefZmp(t, 1)` | ZMP基準軌道の1階微分（$ \dot{p}_{pg} $）を取得 |
-| `config().zmpVelGain` | ゲイン $ T_p $：遅れを見越した補償量を決定 |
+| `calcRefZmp(t, 1)` | ZMP基準軌道の1階微分（$\dot{p}_{pg} $）を取得 |
+| `config().zmpVelGain` | ゲイン $T_p $：遅れを見越した補償量を決定 |
 | `controlZmp_.head<2>() += ...` | XY平面におけるZMP指令を補正する |
 
 ---
@@ -154,14 +154,14 @@ $$
 \xi = x + \frac{\dot{x}}{\omega}
 $$
 
-- $ \xi $：DCMベクトル（発散成分の位置）
-- $ x $：重心（CoM）の位置
-- $ \dot{x} $：重心速度
-- $ \omega $：自然周波数（下記参照）
+- $\xi$：DCMベクトル（発散成分の位置）
+- $x$：重心（CoM）の位置
+- $\dot{x}$：重心速度
+- $\omega$：自然周波数（下記参照）
 
 ---
 
-#### 自然周波数 $ \omega $ の導出
+#### 自然周波数 $\omega$の導出
 
 ```cpp
 double omega = std::sqrt(plannedForceZ_ / (robotMass_ * (mpcCom_.z() - refZmp_.z())));
@@ -173,10 +173,10 @@ $$
 \omega = \sqrt{\frac{F_z}{m (z_{\text{com}} - z_{\text{zmp}})}}
 $$
 
-- $ F_z $：鉛直方向の支持力
-- $ m $：ロボットの質量
-- $ z_{\text{com}} $：重心の高さ
-- $ z_{\text{zmp}} $：ZMPの高さ
+- $F_z$：鉛直方向の支持力
+- $m$：ロボットの質量
+- $z_{\text{com}}$：重心の高さ
+- $z_{\text{zmp}}$：ZMPの高さ
 
 ---
 
@@ -200,8 +200,8 @@ $$
 
 ここで：
 
-- $ \Delta p $：ZMP指令に加算する補償項
-- $ K_\xi $：DCMフィードバックゲイン（`config().dcmGainP`）
+- $\Delta p$：ZMP指令に加算する補償項
+- $K_\xi$：DCMフィードバックゲイン（`config().dcmGainP`）
 
 ---
 
@@ -211,7 +211,7 @@ $$
 controlZmp_.head<2>() += config().dcmGainP * dcmError.head<2>();
 ```
 
-DCM誤差に比例した補償量 $ \Delta p $ を、XY方向のZMP指令に加算することで、歩行中の安定性を改善する。
+DCM誤差に比例した補償量 $\Delta p $を、XY方向のZMP指令に加算することで、歩行中の安定性を改善する。
 
 ## 6. 垂直方向の力制御（PD制御）
 
@@ -224,11 +224,9 @@ controlForceZ_ -= config().comZGainP * (actualComZ - plannedComZ)
                 + config().comZGainD * (actualComVelZ - plannedComVelZ);
 ```
 
-ロボットの重心（CoM）の高さ $z$ とその速度 $\dot{z}$ に目標との差異がある場合に、それを修正するために鉛直方向の力（=重心加速度に相当）を調整する。
+ロボットの重心（CoM）の高さ $z$とその速度 $\dot{z}$に目標との差異がある場合に、それを修正するために鉛直方向の力（=重心加速度に相当）を調整する。
 
-$$
-F_z \leftarrow F_z - K_p (z_{\text{actual}} - z_{\text{ref}}) - K_d (\dot{z}_{\text{actual}} - \dot{z}_{\text{ref}})
-$$
+$$F_z \leftarrow F_z - K_p (z_{\text{actual}} - z_{\text{ref}}) - K_d (\dot{z}_{\text{actual}} - \dot{z}_{\text{ref}})$$
 
 - $F_z$：Z方向の制御力（controlForceZ_）
 - $z_actual$：現在の重心高さ（actualCom().z()）
@@ -240,7 +238,7 @@ $$
 | 項目      | 内容                                                                                                                     |
 | ------- | ---------------------------------------------------------------------------------------------------------------------- |
 | 機能      | Z方向の重心（高さと速度）の誤差を補正するための PD 制御                                                                                         |
-| 数式      | $F_z \leftarrow F_z - K_p (z_{\text{actual}} - z_{\text{ref}}) - K_d (\dot{z}_{\text{actual}} - \dot{z}_{\text{ref}})$ |
+| 数式      | $F_z \leftarrow F_z - K_p (z_{\text{actual}} - z_{\text{ref}}) - K_d (\dot{z}_{\text{actual}} - \dot{z}_{\text{ref}})$|
 | 使用される変数 | `controlForceZ_`, `comZGainP`, `comZGainD`                                                                             |
 | 効果      | ロボットの上下のブレや振動を抑え、安定した垂直姿勢を維持する                                                                                         |
 
@@ -260,7 +258,7 @@ controlWrench.force() << controlForceZ_ / (comForWrenchDist.z() - refZmp_.z()) *
 
 ### 水平力の導出
 
-- ZMPの定義から、水平方向の力 $ f_{xy} $ は以下で導出される：
+- ZMPの定義から、水平方向の力 $f_{xy} $は以下で導出される：
 $$
 \mathbf{f}_{xy} = \frac{F_z}{z_{\text{CoM}} - z_{\text{ZMP}}} \cdot (\mathbf{x}_{\text{CoM}} - \mathbf{p}_{\text{ZMP}})
 $$
@@ -273,19 +271,17 @@ F_z
 \end{bmatrix}
 $$
 
-- $F_z$ : 鉛直方向の総合制御力（controlForceZ_）
-- $\mathbf{x}_{\text{CoM}}$ : 重心位置（comForWrenchDist.head<2>()）
-- $\mathbf{p}_{\text{ZMP}}$ : 重心位置（comForWrenchDist.head<2>()）
+- $F_z$: 鉛直方向の総合制御力（controlForceZ_）
+- $\mathbf{x}_{\text{CoM}}$: 重心位置（comForWrenchDist.head<2>()）
+- $\mathbf{p}_{\text{ZMP}}$: 重心位置（comForWrenchDist.head<2>()）
 
-これは、ZMPの定義式を逆に解いて、必要な水平力 $f_x, f_y$ を導出するものである。
+これは、ZMPの定義式を逆に解いて、必要な水平力 $f_x, f_y$を導出するものである。
 
 ZMP定義式からの導出：
-$$
-\mathbf{p}_{\text{ZMP}} = \mathbf{x}_{\text{CoM}} - \frac{z_{\text{CoM}} - z_{\text{ZMP}}}{F_z} \cdot \mathbf{f}_{xy}
-$$
-$$
-\mathbf{f}_{xy} = \frac{F_z}{z_{\text{CoM}} - z_{\text{ZMP}}} \cdot (\mathbf{x}_{\text{CoM}} - \mathbf{p}_{\text{ZMP}})
-$$
+
+$$\mathbf{p}_{\text{ZMP}} = \mathbf{x}_{\text{CoM}} - \frac{z_{\text{CoM}} - z_{\text{ZMP}}}{F_z} \cdot \mathbf{f}_{xy}$$
+
+$$\mathbf{f}_{xy} = \frac{F_z}{z_{\text{CoM}} - z_{\text{ZMP}}} \cdot (\mathbf{x}_{\text{CoM}} - \mathbf{p}_{\text{ZMP}})$$
 
 #### モーメント（回転力）はゼロに設定
 ```cpp
@@ -317,12 +313,10 @@ Eigen::Vector3d plannedComAccel = calcPlannedComAccel();
 Eigen::Vector3d nextPlannedCom = mpcCom_ + dt * mpcComVel_ + 0.5 * dt^2 * plannedComAccel;
 Eigen::Vector3d nextPlannedComVel = mpcComVel_ + dt * plannedComAccel;
 ```
-$$
-\begin{aligned}
+$$\begin{aligned}
 \mathbf{x}_{\text{next}} &= \mathbf{x}_{\text{now}} + \Delta t \cdot \dot{\mathbf{x}}_{\text{now}} + \frac{1}{2} \Delta t^2 \cdot \ddot{\mathbf{x}} \\
 \dot{\mathbf{x}}_{\text{next}} &= \dot{\mathbf{x}}_{\text{now}} + \Delta t \cdot \ddot{\mathbf{x}}
-\end{aligned}
-$$
+\end{aligned}$$
 
 - CoMの目標位置・速度・加速度を次の制御ステップ分だけオイラー積分で予測。
 - この値を `comTask_` に与えることで、次の制御サイクルに向けた運動指令を生成。
